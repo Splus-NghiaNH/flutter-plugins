@@ -463,6 +463,7 @@ class HealthPlugin(private var channel: MethodChannel? = null) : MethodCallHandl
             "requestAuthorization" -> requestAuthorization(call, result)
             "getData" -> getData(call, result)
             "writeData" -> writeData(call, result)
+            "revokePermission" -> revokePermission(call, result)
             else -> result.notImplemented()
         }
     }
