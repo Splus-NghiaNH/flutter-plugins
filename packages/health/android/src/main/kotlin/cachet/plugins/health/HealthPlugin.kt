@@ -450,6 +450,13 @@ class HealthPlugin(private var channel: MethodChannel? = null) : MethodCallHandl
         return GoogleSignIn.hasPermissions(getFitnessAccount(), getFitnessOptions())
     }
 
+    private fun getFitnessOptions(): FitnessOptions {
+        return FitnessOptions.builder()
+                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_WRITE)
+                .build()
+    }
+
     /// Handle calls from the MethodChannel
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
