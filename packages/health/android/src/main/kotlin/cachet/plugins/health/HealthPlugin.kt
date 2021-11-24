@@ -16,7 +16,8 @@ import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import androidx.annotation.NonNull
-import androidx.annotation.Nullable
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
@@ -419,6 +420,34 @@ class HealthPlugin(private var channel: MethodChannel? = null) : MethodCallHandl
         else {
             mResult?.success(true)
         }
+    }
+
+    private fun revokePermission(call: MethodCall, result: Result) {
+        Fitness.getConfigClient(context, getFitnessAccount())
+                .disableFit()
+                .continueWithTask {
+                    val signInOptions = GoogleSignInOptions.Builder()
+                            .addExtension(FitnessOptions.builder().build())
+                            .build()
+
+                    GoogleSignIn.getClient(context, signInOptions).revokeAccess()
+                }
+                .addOnSuccessListener { result.success(true) }
+                .addOnFailureListener {
+                    if (!isAuthorized()) {
+                        result.success(true)
+                    } else {
+                        result.success(false)
+                    }
+                }
+    }
+
+    private fun getFitnessAccount(): GoogleSignInAccount {
+        return GoogleSignIn.getAccountForExtension(context, getFitnessOptions())
+    }
+
+    private fun isAuthorized(): Boolean {
+        return GoogleSignIn.hasPermissions(getFitnessAccount(), getFitnessOptions())
     }
 
     /// Handle calls from the MethodChannel

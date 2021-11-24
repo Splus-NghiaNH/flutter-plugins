@@ -258,4 +258,8 @@ class HealthFactory {
       return <HealthDataPoint>[];
     }
   }
+
+  static Future<bool> revokePermission() async {
+    return await _channel.invokeMethod('revokePermission') ?? false;
+  }
 }
