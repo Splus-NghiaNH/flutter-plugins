@@ -423,14 +423,14 @@ class HealthPlugin(private var channel: MethodChannel? = null) : MethodCallHandl
     }
 
     private fun revokePermission(call: MethodCall, result: Result) {
-        Fitness.getConfigClient(context, getFitnessAccount())
+        Fitness.getConfigClient(activity!!.applicationContext, getFitnessAccount())
                 .disableFit()
                 .continueWithTask {
                     val signInOptions = GoogleSignInOptions.Builder()
                             .addExtension(FitnessOptions.builder().build())
                             .build()
 
-                    GoogleSignIn.getClient(context, signInOptions).revokeAccess()
+                    GoogleSignIn.getClient(activity!!.applicationContext, signInOptions).revokeAccess()
                 }
                 .addOnSuccessListener { result.success(true) }
                 .addOnFailureListener {
@@ -443,7 +443,7 @@ class HealthPlugin(private var channel: MethodChannel? = null) : MethodCallHandl
     }
 
     private fun getFitnessAccount(): GoogleSignInAccount {
-        return GoogleSignIn.getAccountForExtension(context, getFitnessOptions())
+        return GoogleSignIn.getAccountForExtension(activity!!.applicationContext, getFitnessOptions())
     }
 
     private fun isAuthorized(): Boolean {
